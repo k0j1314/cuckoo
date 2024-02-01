@@ -29,20 +29,24 @@ class CuckooHash:
 		curr = 0
 
 		index_1 = self.hash_func(key, 0)
+
 		if self.tables[curr][index_1] is None:
 			self.tables[curr][index_1] = key
 			return True
 
 		#else we start ping ponging
-		for i in range(self.CYCLE_THRESHOLD):
+		
+		for _ in range(self.CYCLE_THRESHOLD + 1):
 
 			if self.tables[curr][index_1] is not None:
-				temp = self.tables[curr][index_1]
-				self.tables[curr][index_1] = key
-				index_1= self.hash_func(temp, 1- curr)
+				#print(f'{key}and  {curr} hash{ index_1}')
+				temp = self.tables[curr][index_1] # copy whever is in it atm
+				self.tables[curr][index_1] = key # shove x into new position
+				index_1= self.hash_func(temp, 1- curr) # new index is x-1's position in the other hash
 
 				curr = 1- curr # flip between 0 and 1 on the hash
-			else:
+				key = temp
+			else: # if we end up in a empty slot,, put it in
 				self.tables[curr][index_1] = key
 				return True
 
