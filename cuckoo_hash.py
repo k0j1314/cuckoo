@@ -22,7 +22,7 @@ class CuckooHash:
 	# you should *NOT* change any of the existing code above this line
 	# you may however define additional instance variables inside the __init__ method.
 
-def insert(self, key: int) -> bool:
+	def insert(self, key: int) -> bool:
 		# TODO 
 		#testtest
 		# if hash(key, 0) is empty, simply add
