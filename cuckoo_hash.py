@@ -25,13 +25,19 @@ class CuckooHash:
 	def insert(self, key: int) -> bool:
 		#testtest
 		# if hash(key, 0) is empty, simply add
-		index_1 = self.hash_func(key,0)
-		if self.tables[0][index_1] == None:
-			self.tables[0][index_1] == key
+		next = 1 # the other hash, when curr = 0, next is 1 and vice versa
+		index_1 = self.hash_func(key,0)	
+		if self.tables[0][index_1] is None:
+			self.tables[0][index_1] = key
+			return True
 
 		#else we stat ping ponging
-			for i in range(self.CYCLE_THRESHOLD):
-
+		for i in range(self.CYCLE_THRESHOLD):
+			if self.tables[0][index_1]is not None: # if hash0 9key of x) is not empty, we replace it and then move the other value into h1
+				temp = self.tables[0][index_1]
+				self.tables[0][index_1] = key
+				index_bump = self.hash_func(temp)
+				
 				return False
 			
 
