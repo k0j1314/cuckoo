@@ -25,14 +25,35 @@ class CuckooHash:
 	def insert(self, key: int) -> bool:
 		# TODO 
 		#testtest
-		# if hash(key, 0) is empty, simply add
-		index_1 = self.hash_func(key, 0)
-		if self.tables[0][index_1] == None:
-			self.tables[0][index_1] == key
+	
+		for _ in range(self.CYCLE_THRESHOLD):
+			index_1 = self.hash_func(key, 0)
 
-		#else we start ping ponging
-			for i in range(self.CYCLE_THRESHOLD):
-				return False
+			#print("index_1:", index_1)						for testing
+
+			# if hash(key, 0) is empty, simply add
+			if self.tables[0][index_1] == None:
+				self.tables[0][index_1] = key
+				return True
+			else:
+				evicted_key = self.tables[0][index_1]		#Hash(key, 0) is not empty, so it gets evicted
+				self.tables[0][index_1] = key				#replace the slot at Hash(key, 0) with the new key we inserted
+				key = evicted_key							#Set the new key to the evicted key
+				index_2 = self.hash_func(key, 1)			#Set index_2 to the hash function of the key for the second table
+				#print("index_2: ", index_2)				for testing
+
+				#if hash(key, 1) is empty, simply add
+				if self.tables[1][index_2] == None:			
+					self.tables[1][index_2] = key
+					return True
+				else:
+					#else pingpong back to the first table and go through loop again
+					evicted_key = self.tables[1][index_2]	
+					self.tables[1][index_2] = key
+					key = evicted_key
+		return False										#If exit loop, then we have pingponged over the cycle_threshold without finding an empty slot, thus we return false
+			
+
 		pass
 
 	def lookup(self, key: int) -> bool:
