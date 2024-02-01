@@ -71,10 +71,12 @@ def cuckoo_hash_tests():
 
 	if not c.get_table_contents() == ref_ans:
 		print("test 2 table contents incorrect")
+		actual_output = c.get_table_contents()
+		print("Actual:", actual_output)
 		return
 
 	print("\ntest 2 table contents correct")
-
+	
 if __name__ == '__main__':
 	cuckoo_hash_tests()
 

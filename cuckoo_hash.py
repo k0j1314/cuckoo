@@ -80,25 +80,53 @@ class CuckooHash:
 			self.tables[1][index_2] = None
 
 
+	#def rehash(self, new_table_size: int) -> None:
+	#	self.__num_rehashes += 1; self.table_size = new_table_size # do not modify this line
+	#	# TODO 
+#
+#		#create a new table for the cuckoo hash
+#		new_tables = [[None] * new_table_size for _ in range(2)]
+#
+#		#rehash the existing elements from old table to the new table
+#		for table_id in range(2):
+#			print(table_id)
+#			for slot in self.tables[table_id]:
+#				#print(f'slot is {slot} ')
+#				#print (self.tables[table_id])
+#				if slot:
+#					for key in slot:
+#						hash_value = self.hash_func(key, table_id)
+#						new_table_id = 1 - table_id
+#						new_tables[new_table_id][hash_value % new_table_size].apend(key)
+#		
+#		#update self.tables with new table
+#		self.tables = new_tables
+#
+#
 	def rehash(self, new_table_size: int) -> None:
 		self.__num_rehashes += 1; self.table_size = new_table_size # do not modify this line
 		# TODO 
 
 		#create a new table for the cuckoo hash
 		new_tables = [[None] * new_table_size for _ in range(2)]
-
+		print(self.tables)
 		#rehash the existing elements from old table to the new table
 		for table_id in range(2):
-			print(table_id)
+			#print(table_id)
 			for slot in self.tables[table_id]:
 				#print(f'slot is {slot} ')
 				#print (self.tables[table_id])
-				if slot:
-					for key in slot:
-						hash_value = self.hash_func(key, table_id)
+				if slot is not None:
+						#print(slot)
+						hash_value = self.hash_func(slot, table_id)
+						#print(f"{slot} is slot, {table_id} is curr table")
+						#print(table_id)
 						new_table_id = 1 - table_id
-						new_tables[new_table_id][hash_value % new_table_size].apend(key)
-		
+						#print(f' {hash_value} is hash value ')
+						#print(f'{hash_value % new_table_size} is table stuff')
+						new_tables[new_table_id][hash_value % new_table_size] = slot
+						#print(new_tables)
+
 		#update self.tables with new table
 		self.tables = new_tables
 
