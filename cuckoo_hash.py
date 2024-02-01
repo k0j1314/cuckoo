@@ -23,7 +23,7 @@ class CuckooHash:
 	# you may however define additional instance variables inside the __init__ method.
 
 	def insert(self, key: int) -> bool:
-		# TODO 
+		
 		#testtest
 		# if hash(key, 0) is empty, simply add
 		curr = 0
@@ -70,9 +70,7 @@ class CuckooHash:
 			self.tables[0][index_1] = None
 		elif self.tables[1][index_2] == key:
 			self.tables[1][index_2] = None
-		else:
-			{}
-		
+
 
 	def rehash(self, new_table_size: int) -> None:
 		self.__num_rehashes += 1; self.table_size = new_table_size # do not modify this line
