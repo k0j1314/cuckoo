@@ -54,8 +54,8 @@ def cuckoo_hash_tests():
 		# there should be a cycle when inserting 15
 		print("inserting %d" % num)
 		no_cycle = c.insert(num)
-		actual_output = c.get_table_contents()
-		print("Actual:", actual_output)
+		#actual_output = c.get_table_contents()
+		#print("Actual:", actual_output)
 		if no_cycle == False:
 			print("found cycle when inserting %d" %num)
 			break

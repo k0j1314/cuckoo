@@ -35,9 +35,8 @@ class CuckooHash:
 			return True
 
 		#else we start ping ponging
-		
-		for _ in range(self.CYCLE_THRESHOLD + 1):
-
+		for _ in range(self.CYCLE_THRESHOLD):
+			
 			if self.tables[curr][index_1] is not None:
 				#print(f'{key}and  {curr} hash{ index_1}')
 				temp = self.tables[curr][index_1] # copy whever is in it atm
@@ -46,10 +45,15 @@ class CuckooHash:
 
 				curr = 1- curr # flip between 0 and 1 on the hash
 				key = temp
+
 			else: # if we end up in a empty slot,, put it in
 				self.tables[curr][index_1] = key
 				return True
-
+			# after CYCLE-1  loops  we just do one more insert and then return false
+			
+		temp = self.tables[curr][index_1] # copy whever is in it atm
+		self.tables[curr][index_1] = key # shove x into new position
+		index_1= self.hash_func(temp, 1- curr) # new index is x-1's position in the other hash	
 
 		return False
 			
@@ -85,7 +89,10 @@ class CuckooHash:
 
 		#rehash the existing elements from old table to the new table
 		for table_id in range(2):
+			print(table_id)
 			for slot in self.tables[table_id]:
+				#print(f'slot is {slot} ')
+				#print (self.tables[table_id])
 				if slot:
 					for key in slot:
 						hash_value = self.hash_func(key, table_id)
