@@ -54,11 +54,9 @@ class CuckooHash:
 		return False										#If exit loop, then we have pingponged over the cycle_threshold without finding an empty slot, thus we return false
 			
 
-		pass
 
 	def lookup(self, key: int) -> bool:
-		# TODO 
-		index_1 = self.hash_func(key, 0)
+		index_1 = self.hash_func(key,0)
 		index_2 = self.hash_func(key, 1)
 		if self.tables[0][index_1] == key:
 			return True
@@ -66,19 +64,20 @@ class CuckooHash:
 			return True
 		else:
 			return False
-		pass
 		
 
+
 	def delete(self, key: int) -> None:
-		# TODO 
-		index_1 = self.hash_func(key, 0)
+		index_1 = self.hash_func(key,0)
 		index_2 = self.hash_func(key, 1)
 
 		if self.tables[0][index_1] == key:
 			self.tables[0][index_1] = None
 		elif self.tables[1][index_2] == key:
 			self.tables[1][index_2] = None
-		pass
+		else:
+			{}
+		
 
 	def rehash(self, new_table_size: int) -> None:
 		self.__num_rehashes += 1; self.table_size = new_table_size # do not modify this line
@@ -99,7 +98,9 @@ class CuckooHash:
 		#update self.tables with new table
 		self.tables = new_tables
 
-		pass
+
+
+
 
 	# feel free to define new methods in addition to the above
 	# fill in the definitions of each required member function (above),
