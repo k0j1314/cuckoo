@@ -29,18 +29,22 @@ class CuckooHash:
 		curr = 0
 
 		index_1 = self.hash_func(key, 0)
-		if self.tables[curr][index_1] == None:
-			self.tables[curr][index_1] == key
+		if self.tables[curr][index_1] is None:
+			self.tables[curr][index_1] = key
+			return True
 
 		#else we start ping ponging
 		for i in range(self.CYCLE_THRESHOLD):
 
 			if self.tables[curr][index_1] is not None:
 				temp = self.tables[curr][index_1]
-				self.tables[curr][index_1] == key
+				self.tables[curr][index_1] = key
 				index_1= self.hash_func(temp, 1- curr)
 
 				curr = 1- curr # flip between 0 and 1 on the hash
+			else:
+				self.tables[curr][index_1] = key
+				return True
 
 
 		return False
