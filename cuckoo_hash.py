@@ -22,17 +22,32 @@ class CuckooHash:
 	# you should *NOT* change any of the existing code above this line
 	# you may however define additional instance variables inside the __init__ method.
 
-	def insert(self, key: int) -> bool:
+def insert(self, key: int) -> bool:
 		# TODO 
 		#testtest
 		# if hash(key, 0) is empty, simply add
+		curr = 0
+
 		index_1 = self.hash_func(key, 0)
-		if self.tables[0][index_1] == None:
-			self.tables[0][index_1] == key
+		if self.tables[curr][index_1] is None:
+			self.tables[curr][index_1] = key
+			return True
 
 		#else we start ping ponging
-			for i in range(self.CYCLE_THRESHOLD):
-				return False
+		for i in range(self.CYCLE_THRESHOLD):
+
+			if self.tables[curr][index_1] is not None:
+				temp = self.tables[curr][index_1]
+				self.tables[curr][index_1] = key
+				index_1= self.hash_func(temp, 1- curr)
+
+				curr = 1- curr # flip between 0 and 1 on the hash
+			else:
+				self.tables[curr][index_1] = key
+				return True
+
+
+		return False
 			
 
 	def lookup(self, key: int) -> bool:
