@@ -1,3 +1,4 @@
+
 # explanations for member functions are provided in requirements.py
 # each file that uses a cuckoo hash should import it from this file.
 import random as rand
@@ -23,9 +24,9 @@ class CuckooHash:
 	# you may however define additional instance variables inside the __init__ method.
 
 	def insert(self, key: int) -> bool:
-		
+		# TODO 
 		#testtest
-		# if hash(key, 0) is empty, simply add
+
 		curr = 0
 
 		index_1 = self.hash_func(key, 0)
@@ -33,7 +34,7 @@ class CuckooHash:
 		if self.tables[curr][index_1] is None:
 			self.tables[curr][index_1] = key
 			return True
-
+		
 		#else we start ping ponging
 		for _ in range(self.CYCLE_THRESHOLD):
 			
@@ -56,7 +57,7 @@ class CuckooHash:
 		index_1= self.hash_func(temp, 1- curr) # new index is x-1's position in the other hash	
 
 		return False
-			
+
 
 	def lookup(self, key: int) -> bool:
 		index_1 = self.hash_func(key,0)
@@ -78,65 +79,29 @@ class CuckooHash:
 			self.tables[0][index_1] = None
 		elif self.tables[1][index_2] == key:
 			self.tables[1][index_2] = None
+		else:
+			{}
+		
 
-
-	#def rehash(self, new_table_size: int) -> None:
-	#	self.__num_rehashes += 1; self.table_size = new_table_size # do not modify this line
-	#	# TODO 
-#
-#		#create a new table for the cuckoo hash
-#		new_tables = [[None] * new_table_size for _ in range(2)]
-#
-#		#rehash the existing elements from old table to the new table
-#		for table_id in range(2):
-#			print(table_id)
-#			for slot in self.tables[table_id]:
-#				#print(f'slot is {slot} ')
-#				#print (self.tables[table_id])
-#				if slot:
-#					for key in slot:
-#						hash_value = self.hash_func(key, table_id)
-#						new_table_id = 1 - table_id
-#						new_tables[new_table_id][hash_value % new_table_size].apend(key)
-#		
-#		#update self.tables with new table
-#		self.tables = new_tables
-#
-#
 	def rehash(self, new_table_size: int) -> None:
+		old_tables = self.tables # Store original table so we have a basis to rehash
 		self.__num_rehashes += 1; self.table_size = new_table_size # do not modify this line
-		# TODO 
+        # TODO 
 
-		#create a new table for the cuckoo hash
-		new_tables = [[None] * new_table_size for _ in range(2)]
-		print(self.tables)
-		#rehash the existing elements from old table to the new table
-		for table_id in range(2):
-			#print(table_id)
-			for slot in self.tables[table_id]:
-				#print(f'slot is {slot} ')
-				#print (self.tables[table_id])
-				if slot is not None:
-						#print(slot)
-						hash_value = self.hash_func(slot, table_id)
-						#print(f"{slot} is slot, {table_id} is curr table")
-						#print(table_id)
-						new_table_id = table_id
-						#print(f' {hash_value} is hash value ')
-						#print(f'{hash_value % new_table_size} is table stuff')
-						new_tables[new_table_id][hash_value] = slot
-						new_table_id = 1 - table_id
-						#print(new_tables)
+        #Create new table
+		self.tables = [[None] * new_table_size for _ in range(2)]
 
-		#update self.tables with new table
-		self.tables = new_tables
+        #Rehash existing elements from old to new table
+		for table in old_tables:
+			for key in table:
+				if key is not None:
+					self.insert(key)
+					
 
-
-
+		
 
 
 	# feel free to define new methods in addition to the above
 	# fill in the definitions of each required member function (above),
 	# and for any additional member functions you define
-
 
