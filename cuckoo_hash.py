@@ -254,27 +254,12 @@ class CuckooHash:
 	def rehash(self, new_table_size: int) -> None:
 		old_tables = self.tables # Store original table so we have a basis to rehash
 		self.__num_rehashes += 1; self.table_size = new_table_size # do not modify this line
-		# TODO 
+        # TODO 
 
-		#create a new table for the cuckoo hash
-		new_tables = [[None] * new_table_size for _ in range(2)]
-
-		#rehash the existing elements from old table to the new table
-		for table_id in range(2):
-			for slot in self.tables[table_id]:
-				if slot:
-					for key in slot:
-						hash_value = self.hash_func(key, table_id)
-						new_table_id = 1 - table_id
-						new_tables[new_table_id][hash_value % new_table_size].apend(key)
-
-		#update self.tables with new table
-		self.tables = new_tables
-
-		#Create new table
+        #Create new table
 		self.tables = [[None] * new_table_size for _ in range(2)]
 
-		#Rehash existing elements from old to new table
+        #Rehash existing elements from old to new table
 		for table in old_tables:
 			for key in table:
 				if key is not None:
