@@ -86,7 +86,7 @@ class CuckooHash:
 					key = evicted_key
 		return False										#If exit loop, then we have pingponged over the cycle_threshold without finding an empty slot, thus we return false
 			
-
+"""
 
 	def lookup(self, key: int) -> bool:
 		index_1 = self.hash_func(key,0)
@@ -99,7 +99,7 @@ class CuckooHash:
 			return False
 		
 
-"""
+
 	def delete(self, key: int) -> None:
 		index_1 = self.hash_func(key,0)
 		index_2 = self.hash_func(key, 1)
