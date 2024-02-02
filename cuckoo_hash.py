@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 # explanations for member functions are provided in requirements.py
 # each file that uses a cuckoo hash should import it from this file.
 import random as rand
@@ -59,7 +58,7 @@ class CuckooHash:
 
 		return False
 			
-	
+	"""
 		for _ in range(self.CYCLE_THRESHOLD):
 			index_1 = self.hash_func(key, 0)
 
@@ -100,7 +99,7 @@ class CuckooHash:
 			return False
 		
 
-
+"""
 	def delete(self, key: int) -> None:
 		index_1 = self.hash_func(key,0)
 		index_2 = self.hash_func(key, 1)
@@ -167,7 +166,7 @@ class CuckooHash:
 	# and for any additional member functions you define
 
 
-=======
+
 # explanations for member functions are provided in requirements.py
 # each file that uses a cuckoo hash should import it from this file.
 import random as rand
@@ -257,6 +256,21 @@ class CuckooHash:
 		self.__num_rehashes += 1; self.table_size = new_table_size # do not modify this line
 		# TODO 
 
+		#create a new table for the cuckoo hash
+		new_tables = [[None] * new_table_size for _ in range(2)]
+
+		#rehash the existing elements from old table to the new table
+		for table_id in range(2):
+			for slot in self.tables[table_id]:
+				if slot:
+					for key in slot:
+						hash_value = self.hash_func(key, table_id)
+						new_table_id = 1 - table_id
+						new_tables[new_table_id][hash_value % new_table_size].apend(key)
+
+		#update self.tables with new table
+		self.tables = new_tables
+
 		#Create new table
 		self.tables = [[None] * new_table_size for _ in range(2)]
 
@@ -274,5 +288,3 @@ class CuckooHash:
 	# fill in the definitions of each required member function (above),
 	# and for any additional member functions you define
 
-
->>>>>>> 0a7ff7a2fd469f63efc26a40402ee67bd5a53d43
