@@ -41,7 +41,19 @@ class CuckooHash24:
 
 	def lookup(self, key: int) -> bool:
 		# TODO
-		pass
+
+		index_0 = self.hash_func(key, 0)
+		index_1 = self.hash_func(key,1)
+		for i in self.tables[0]:
+			if self.tables[0][i] == index_0:
+				return True
+		for i in self.tables[i]:
+			if self.tables[1][i] == index_1:
+				return True
+		return False
+
+
+		
 		
 
 	def delete(self, key: int) -> None:

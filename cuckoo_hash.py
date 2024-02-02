@@ -121,10 +121,11 @@ class CuckooHash:
 						hash_value = self.hash_func(slot, table_id)
 						#print(f"{slot} is slot, {table_id} is curr table")
 						#print(table_id)
-						new_table_id = 1 - table_id
+						new_table_id = table_id
 						#print(f' {hash_value} is hash value ')
 						#print(f'{hash_value % new_table_size} is table stuff')
-						new_tables[new_table_id][hash_value % new_table_size] = slot
+						new_tables[new_table_id][hash_value] = slot
+						new_table_id = 1 - table_id
 						#print(new_tables)
 
 		#update self.tables with new table
