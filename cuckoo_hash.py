@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # explanations for member functions are provided in requirements.py
 # each file that uses a cuckoo hash should import it from this file.
 import random as rand
@@ -57,6 +58,35 @@ class CuckooHash:
 
 		return False
 			
+	
+		for _ in range(self.CYCLE_THRESHOLD):
+			index_1 = self.hash_func(key, 0)
+
+			#print("index_1:", index_1)						for testing
+
+			# if hash(key, 0) is empty, simply add
+			if self.tables[0][index_1] == None:
+				self.tables[0][index_1] = key
+				return True
+			else:
+				evicted_key = self.tables[0][index_1]		#Hash(key, 0) is not empty, so it gets evicted
+				self.tables[0][index_1] = key				#replace the slot at Hash(key, 0) with the new key we inserted
+				key = evicted_key							#Set the new key to the evicted key
+				index_2 = self.hash_func(key, 1)			#Set index_2 to the hash function of the key for the second table
+				#print("index_2: ", index_2)				for testing
+
+				#if hash(key, 1) is empty, simply add
+				if self.tables[1][index_2] == None:			
+					self.tables[1][index_2] = key
+					return True
+				else:
+					#else pingpong back to the first table and go through loop again
+					evicted_key = self.tables[1][index_2]	
+					self.tables[1][index_2] = key
+					key = evicted_key
+		return False										#If exit loop, then we have pingponged over the cycle_threshold without finding an empty slot, thus we return false
+			
+
 
 	def lookup(self, key: int) -> bool:
 		index_1 = self.hash_func(key,0)
@@ -122,11 +152,8 @@ class CuckooHash:
 						#print(f"{slot} is slot, {table_id} is curr table")
 						#print(table_id)
 						new_table_id = 1 - table_id
-						#print(f' {hash_value} is hash value ')
-						#print(f'{hash_value % new_table_size} is table stuff')
-						new_tables[new_table_id][hash_value % new_table_size] = slot
-						#print(new_tables)
-
+						new_tables[new_table_id][hash_value % new_table_size].apend(key)
+		
 		#update self.tables with new table
 		self.tables = new_tables
 
