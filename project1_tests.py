@@ -17,8 +17,6 @@ def cuckoo_hash_tests():
 	for num in nums:
 		print("inserting %d" % num)
 		no_cycle = c.insert(num)
-		#actual_output = c.get_table_contents()
-		#print("Actual:", actual_output)
 		if no_cycle == False:
 			print("error: cycle should not exist")
 
@@ -36,10 +34,7 @@ def cuckoo_hash_tests():
 	print("Actual():", actual_output)
 
 	if not c.get_table_contents() == ref_ans:
-
-		
 		print("test 1 table contents incorrect")
-		
 		return
 
 	print("\ntest 1 table contents correct")
@@ -54,8 +49,6 @@ def cuckoo_hash_tests():
 		# there should be a cycle when inserting 15
 		print("inserting %d" % num)
 		no_cycle = c.insert(num)
-		#actual_output = c.get_table_contents()
-		#print("Actual:", actual_output)
 		if no_cycle == False:
 			print("found cycle when inserting %d" %num)
 			break
@@ -74,14 +67,17 @@ def cuckoo_hash_tests():
 	c.rehash(20)
 	ref_ans = [[None, None, 12, None, 4, None, None, 13, None, 14, None, None, 1, None, None, 11, None, 3, 0, 9], [None, None, 8, 5, None, 15, None, None, None, None, None, 10, None, None, None, None, None, None, 2, 7]]
 
+	#Used to see what was incorrect in the table
+	actual_output = c.get_table_contents()
+	print ("Expected after rehash:", ref_ans)
+	print("Actual() after rehash:", actual_output)
+
 	if not c.get_table_contents() == ref_ans:
 		print("test 2 table contents incorrect")
-		actual_output = c.get_table_contents()
-		print("Actual:", actual_output)
 		return
 
 	print("\ntest 2 table contents correct")
-	
+
 if __name__ == '__main__':
 	cuckoo_hash_tests()
 
