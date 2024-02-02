@@ -37,33 +37,53 @@ class CuckooHash24:
 
 	def insert(self, key: int) -> bool:
 		# TODO
-		index_0 = self.hash_func(key, 0)
 
-		if self.tables[0][index_0] is None:
-			list = [None] * 4
-			list[0] = key
-			self.tabls[0][index_0] = list
+		curr_table = 0
+
+		index_1 = self.hash_func(key, 0)
+
+		if self.tables[curr_table][index_1] is None:
+			self.tables[curr_table][index_1] = [key]
 			return True
-		
-		
-		
+				
+		if len(self.get_table_contents()) < self.bucket_size:
+			self.tables[curr_table][index_1].append(key)
+			return True
 			
+		for _ in range(self.CYCLE_THRESHOLD):
+			num_full = 0
+			for i in range(self.bucket_size):
+				if self.tables[curr_table][index_1][i] is not None:
+					num_full = num_full + 1
+				else:
+					self.tables[curr_table][index_1][i] = key
+					return True
+			
+			if num_full >= self.bucket_size:
+				slot = self.get_rand_idx_from_bucket(index_1, curr_table)
+				evicted_key = self.tables[curr_table][index_1][slot]
+				self.tables[curr_table][index_1].remove(evicted_key)
+				self.tables[curr_table][index_1].append(key)
 
+				curr_table = 1 - curr_table
+				key = evicted_key
 
+			else:
+				for i in range(self.bucket_size):
+					if self.tables[curr_table][index_1][i] is None:
+						self.tables[curr_table][index_1][i] = key
+						return True
+		
 		return False
+
+		pass
 
 	def lookup(self, key: int) -> bool:
 		# TODO
 
-		index_0 = self.hash_func(key, 0)
-		index_1 = self.hash_func(key,1)
-		for i in self.tables[0]:
-			if self.tables[0][i] == index_0:
-				return True
-		for i in self.tables[i]:
-			if self.tables[1][i] == index_1:
-				return True
-		return False
+		
+
+		pass
 
 
 		
@@ -71,11 +91,17 @@ class CuckooHash24:
 
 	def delete(self, key: int) -> None:
 		# TODO
+
+		
+
 		pass
 
 	def rehash(self, new_table_size: int) -> None:
 		self.__num_rehashes += 1; self.table_size = new_table_size # do not modify this line
 		# TODO
+
+		
+
 		pass
 
 	# feel free to define new methods in addition to the above
