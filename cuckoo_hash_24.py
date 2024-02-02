@@ -42,38 +42,52 @@ class CuckooHash24:
 
 		index_1 = self.hash_func(key, 0)
 
+		# Check to see if the bucket is empty, if so, then add a list with the key in it
 		if self.tables[curr_table][index_1] is None:
 			self.tables[curr_table][index_1] = [key]
 			return True
-				
-		if len(self.get_table_contents()) < self.bucket_size:
+		
+		# Check to see if the bucket is full, if not then append the key onto the list
+		if len(self.tables[curr_table][index_1]) < self.bucket_size:
 			self.tables[curr_table][index_1].append(key)
 			return True
-			
-		for _ in range(self.CYCLE_THRESHOLD):
-			num_full = 0
-			for i in range(self.bucket_size):
-				if self.tables[curr_table][index_1][i] is not None:
-					num_full = num_full + 1
-				else:
-					self.tables[curr_table][index_1][i] = key
-					return True
-			
-			if num_full >= self.bucket_size:
-				slot = self.get_rand_idx_from_bucket(index_1, curr_table)
-				evicted_key = self.tables[curr_table][index_1][slot]
-				self.tables[curr_table][index_1].remove(evicted_key)
-				self.tables[curr_table][index_1].append(key)
-
-				curr_table = 1 - curr_table
-				key = evicted_key
-
-			else:
-				for i in range(self.bucket_size):
-					if self.tables[curr_table][index_1][i] is None:
-						self.tables[curr_table][index_1][i] = key
-						return True
 		
+		# else we start ping ponging
+		for _ in range(self.CYCLE_THRESHOLD):
+
+			# Check to see if bucket is empty, if so, then add a list with the key in it (second table)
+			if self.tables[curr_table][index_1] is None:
+				self.tables[curr_table][index_1] = [key]
+				return True
+			
+			# Check to see if the bucket is full, if not then append the key onto the list (second table)
+			if len(self.tables[curr_table][index_1]) < self.bucket_size:
+				self.tables[curr_table][index_1].append(key)
+				return True
+
+			# Goes through the bucket and increments counter if slot in bucket is occupied
+			if len(self.tables[curr_table][index_1]) >= self.bucket_size:
+				slot = self.get_rand_idx_from_bucket(index_1, curr_table) # Get random slot in bucket to evict
+				evicted_key = self.tables[curr_table][index_1][slot] # Set evicted key to the element in the slot
+				self.tables[curr_table][index_1].remove(evicted_key) # Remove the evicted key from the bucket
+				self.tables[curr_table][index_1].append(key) # Append the key to the bucket
+				index_1 = self.hash_func(evicted_key, 1 - curr_table) # Update index for the other table
+
+				curr_table = 1 - curr_table #flip between 0 and 1 on the hash
+				key = evicted_key #Update the key
+
+			# if the bucket isn't full, then append the key onto the bucket
+			else:
+				self.tables[curr_table][index_1].append(key)
+				return True
+		
+		#after CYCLE-1 loops we do one more insert and then return false 
+		slot = self.get_rand_idx_from_bucket(index_1, curr_table)
+		evicted_key = self.tables[curr_table][index_1][slot]
+		self.tables[curr_table][index_1].remove(evicted_key)
+		self.tables[curr_table][index_1].append(key)
+		index_1 = self.hash_func(evicted_key, 1 - curr_table)
+
 		return False
 
 		pass
@@ -110,8 +124,6 @@ class CuckooHash24:
 
 	def delete(self, key: int) -> None:
 		# TODO
-
-		print(self.get_table_contents())
 
 		index_1 = self.hash_func(key, 0)
 		index_2 = self.hash_func(key, 1)
