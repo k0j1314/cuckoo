@@ -25,34 +25,37 @@ class CuckooHash:
 	def insert(self, key: int) -> bool:
 		# TODO 
 		#testtest
-	
+
+		curr = 0
+
+		index_1 = self.hash_func(key, 0)
+
+		if self.tables[curr][index_1] is None:
+			self.tables[curr][index_1] = key
+			return True
+		
+		#else we start ping ponging
 		for _ in range(self.CYCLE_THRESHOLD):
-			index_1 = self.hash_func(key, 0)
-
-			#print("index_1:", index_1)						for testing
-
-			# if hash(key, 0) is empty, simply add
-			if self.tables[0][index_1] == None:
-				self.tables[0][index_1] = key
-				return True
-			else:
-				evicted_key = self.tables[0][index_1]		#Hash(key, 0) is not empty, so it gets evicted
-				self.tables[0][index_1] = key				#replace the slot at Hash(key, 0) with the new key we inserted
-				key = evicted_key							#Set the new key to the evicted key
-				index_2 = self.hash_func(key, 1)			#Set index_2 to the hash function of the key for the second table
-				#print("index_2: ", index_2)				for testing
-
-				#if hash(key, 1) is empty, simply add
-				if self.tables[1][index_2] == None:			
-					self.tables[1][index_2] = key
-					return True
-				else:
-					#else pingpong back to the first table and go through loop again
-					evicted_key = self.tables[1][index_2]	
-					self.tables[1][index_2] = key
-					key = evicted_key
-		return False										#If exit loop, then we have pingponged over the cycle_threshold without finding an empty slot, thus we return false
 			
+			if self.tables[curr][index_1] is not None:
+				#print(f'{key}and  {curr} hash{ index_1}')
+				temp = self.tables[curr][index_1] # copy whever is in it atm
+				self.tables[curr][index_1] = key # shove x into new position
+				index_1= self.hash_func(temp, 1- curr) # new index is x-1's position in the other hash
+
+				curr = 1- curr # flip between 0 and 1 on the hash
+				key = temp
+
+			else: # if we end up in a empty slot,, put it in
+				self.tables[curr][index_1] = key
+				return True
+			# after CYCLE-1  loops  we just do one more insert and then return false
+			
+		temp = self.tables[curr][index_1] # copy whever is in it atm
+		self.tables[curr][index_1] = key # shove x into new position
+		index_1= self.hash_func(temp, 1- curr) # new index is x-1's position in the other hash	
+
+		return False
 
 
 	def lookup(self, key: int) -> bool:
@@ -80,26 +83,21 @@ class CuckooHash:
 		
 
 	def rehash(self, new_table_size: int) -> None:
+		old_tables = self.tables # Store original table so we have a basis to rehash
 		self.__num_rehashes += 1; self.table_size = new_table_size # do not modify this line
 		# TODO 
 
-		#create a new table for the cuckoo hash
-		new_tables = [[None] * new_table_size for _ in range(2)]
+		#Create new table
+		self.tables = [[None] * new_table_size for _ in range(2)]
 
-		#rehash the existing elements from old table to the new table
-		for table_id in range(2):
-			for slot in self.tables[table_id]:
-				if slot:
-					for key in slot:
-						hash_value = self.hash_func(key, table_id)
-						new_table_id = 1 - table_id
-						new_tables[new_table_id][hash_value % new_table_size].apend(key)
+		#Rehash existing elements from old to new table
+		for table in old_tables:
+			for key in table:
+				if key is not None:
+					self.insert(key)
+					
+
 		
-		#update self.tables with new table
-		self.tables = new_tables
-
-
-
 
 
 	# feel free to define new methods in addition to the above

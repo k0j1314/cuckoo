@@ -67,6 +67,11 @@ def cuckoo_hash_tests():
 	c.rehash(20)
 	ref_ans = [[None, None, 12, None, 4, None, None, 13, None, 14, None, None, 1, None, None, 11, None, 3, 0, 9], [None, None, 8, 5, None, 15, None, None, None, None, None, 10, None, None, None, None, None, None, 2, 7]]
 
+	#Used to see what was incorrect in the table
+	actual_output = c.get_table_contents()
+	print ("Expected after rehash:", ref_ans)
+	print("Actual() after rehash:", actual_output)
+
 	if not c.get_table_contents() == ref_ans:
 		print("test 2 table contents incorrect")
 		return
