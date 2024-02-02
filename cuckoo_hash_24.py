@@ -81,7 +81,26 @@ class CuckooHash24:
 	def lookup(self, key: int) -> bool:
 		# TODO
 
+		index_1 = self.hash_func(key, 0)
+		index_2 = self.hash_func(key, 1)
+
+		if self.tables[0][index_1] == None:
+			return False
+		if self.tables[1][index_2] == None:
+			return False
 		
+		if self.tables[0][index_1] == key:
+			return True
+		if self.tables[1][index_2] == key:
+			return True
+
+		for i in range(self.bucket_size):
+			if self.tables[0][index_1][i] == key:
+				return True
+			if self.tables[1][index_2][i] == key:
+				return True
+			
+		return False
 
 		pass
 
@@ -92,7 +111,31 @@ class CuckooHash24:
 	def delete(self, key: int) -> None:
 		# TODO
 
+		print(self.get_table_contents())
+
+		index_1 = self.hash_func(key, 0)
+		index_2 = self.hash_func(key, 1)
+
+		if self.tables[0][index_1] == key:
+			self.tables[0][index_1] = None
+		if self.tables[1][index_1] == key:
+			self.tables[1][index_2] = None
+
+		for i in range(self.bucket_size):
+			if self.tables[0][index_1][i] == key:
+				if len(self.tables[0][index_1]) == 1:
+					self.tables[0][index_1] = None
+				else:
+					self.tables[0][index_1].remove(key)
+				return True
+			if self.tables[1][index_2][i] == key:
+				if len(self.tables[1][index_2]) == 1:
+					self.tables[1][index_2] = None
+				else:
+					self.tables[1][index_2].remove(key)
+				return True
 		
+		return False
 
 		pass
 

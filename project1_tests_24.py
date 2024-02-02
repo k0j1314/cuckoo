@@ -28,6 +28,10 @@ def cuckoo_hash_tests():
 
 	ref_ans = [[None, None, [7], None, [6], None, None, [5, 8], None, [9]], [None, None, None, None, None, None, None, None, None, None]]
 
+	actual_output = c.get_table_contents()
+	print("Expected: ", ref_ans)
+	print("Actual(): ", actual_output)
+
 	if not c.get_table_contents() == ref_ans:
 		print("test 1 table contents incorrect")
 		return
