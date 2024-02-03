@@ -130,10 +130,16 @@ class CuckooHash24:
 		pass
 
 	def rehash(self, new_table_size: int) -> None:
+		old_tables = self.tables
 		self.__num_rehashes += 1; self.table_size = new_table_size # do not modify this line
 		# TODO
 
-		
+		self.tables = [[None] * new_table_size for _ in range(2)]
+
+		for table in old_tables:
+			for key in table:
+				if key is not None:
+					self.insert(key)
 
 		pass
 
