@@ -76,22 +76,20 @@ class CuckooHash24:
 		index_1 = self.hash_func(key, 0)
 		index_2 = self.hash_func(key, 1)
 
-		if self.tables[0][index_1] == None:
-			return False
-		if self.tables[1][index_2] == None:
-			return False
+		if self.tables[0][index_1] is not None:
+			if self.tables[0][index_1] == key:
+				return True
+			for i in range(len(self.tables[0][index_1])):
+				if self.tables[0][index_1] == key:
+					return True
 		
-		if self.tables[0][index_1] == key:
-			return True
-		if self.tables[1][index_2] == key:
-			return True
+		if self.tables[1][index_2] is not None:
+			if self.tables[1][index_2] == key:
+				return True
+			for i in range(len(self.tables[1][index_2])):
+				if self.tables[1][index_2] == key:
+					return True
 
-		for i in range(self.bucket_size):
-			if self.tables[0][index_1][i] == key:
-				return True
-			if self.tables[1][index_2][i] == key:
-				return True
-			
 		return False
 
 		pass
@@ -103,29 +101,28 @@ class CuckooHash24:
 	def delete(self, key: int) -> None:
 		# TODO
 
+		# Get the possible bucket that the key could be in for each table
 		index_1 = self.hash_func(key, 0)
 		index_2 = self.hash_func(key, 1)
 
-		if self.tables[0][index_1] == key:
-			self.tables[0][index_1] = None
-		if self.tables[1][index_1] == key:
-			self.tables[1][index_2] = None
 
-		for i in range(self.bucket_size):
-			if self.tables[0][index_1][i] == key:
-				if len(self.tables[0][index_1]) == 1:
-					self.tables[0][index_1] = None
-				else:
-					self.tables[0][index_1].remove(key)
-				return True
-			if self.tables[1][index_2][i] == key:
-				if len(self.tables[1][index_2]) == 1:
-					self.tables[1][index_2] = None
-				else:
-					self.tables[1][index_2].remove(key)
-				return True
-		
-		return False
+		# If both buckets are empty, then don't do anything
+		if (self.tables[0][index_1] is None) and (self.tables[1][index_2] is None):
+			return
+
+		# Check through the buckets that the key could be in
+		for curr_table in range(2):
+			index_bucket = self.hash_func(key, curr_table)
+			if self.tables[curr_table][index_bucket] is not None:
+				for i in range(len(self.tables[curr_table][index_bucket])):
+					if self.tables[curr_table][index_bucket][i] == key:
+						if len(self.tables[curr_table][index_bucket]) == 1:
+							self.tables[curr_table][index_bucket] = None
+						else:
+							self.tables[curr_table][index_bucket].remove(key)
+					return
+
+		 
 
 		pass
 
